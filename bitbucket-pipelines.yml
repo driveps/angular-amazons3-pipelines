@@ -1,0 +1,22 @@
+# You can use a Docker image from Docker Hub or your own container
+# registry for your build environment.
+image: attensee/s3_website
+
+pipelines:
+  default:
+      - step:
+          script:  # Modify the commands below to build and test your repository.
+            - echo "default task"
+  branches:
+      staging:
+        - step:
+            script:
+#            - apt-get update
+            - curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+            - sudo apt-get install -y nodejs
+            - npm install grunt bower -g
+            - npm --version
+            - npm install --unsafe-perm
+            - bower install --allow-root
+            - grunt build
+            - s3_website push
